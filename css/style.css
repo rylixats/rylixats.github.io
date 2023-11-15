@@ -17,3 +17,37 @@ body {
 .ͼ1.cm-focused {
   outline: 0;
 }
+
+/*NAV BAR - START*/
+ul {
+  font-family: monospace;
+  list-style-type: none;
+  margin-bottom: 5px;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  margin: 2px;
+  padding: 5px;
+  text-decoration: none;
+}
+
+.right {
+  position: absolute;
+  right: 15px;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+  background-color: #111;
+}
+/*NAV BAR - END*/
