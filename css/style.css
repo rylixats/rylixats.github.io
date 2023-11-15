@@ -1,0 +1,19 @@
+body {
+  background: black;
+}
+
+.cm-editor {
+  border: 1px solid darkslategray;
+}
+
+.ͼ1 .cm-line {
+  padding: 0 2px 0 10px;
+}
+
+.cm-syllableCounter {
+  color: yellowgreen;
+}
+
+.ͼ1.cm-focused {
+  outline: 0;
+}
