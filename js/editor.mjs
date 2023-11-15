@@ -2,7 +2,7 @@ import {basicSetup} from "codemirror"
 import {EditorView, gutter, GutterMarker, lineNumbers} from "@codemirror/view"
 import {autocompletion} from "@codemirror/autocomplete"
 import {barf} from 'thememirror';
-import {countTotalSyllables} from "../inc/syllable.js";
+import {countTotalSyllables} from "./syllable.js";
 
 const completions = [
     {label: "panic", type: "keyword"},
