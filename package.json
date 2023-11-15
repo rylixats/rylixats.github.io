@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "google": "node google.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,8 +13,11 @@
     "@codemirror/autocomplete": "^6.11.0",
     "@codemirror/state": "^6.3.1",
     "@codemirror/view": "^6.22.0",
+    "@google-cloud/local-auth": "^2.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "codemirror": "^6.0.1",
+    "googleapis": "^105.0.0",
+    "process": "^0.11.10",
     "rollup": "^4.4.1",
     "thememirror": "^2.0.1"
   }

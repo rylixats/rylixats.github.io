@@ -1,3 +1,7 @@
+* {
+  font-family: monospace;
+}
+
 body {
   background: black;
 }
@@ -18,9 +22,13 @@ body {
   outline: 0;
 }
 
+#word-count {
+  padding-left: 5px;
+  margin: 3px;
+}
+
 /*NAV BAR - START*/
 ul {
-  font-family: monospace;
   list-style-type: none;
   margin-bottom: 5px;
   padding: 0;
@@ -43,7 +51,7 @@ li a {
 
 .right {
   position: absolute;
-  right: 15px;
+  right: 10px;
 }
 
 /* Change the link color to #111 (black) on hover */

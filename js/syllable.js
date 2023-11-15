@@ -1,4 +1,5 @@
 export function countTotalSyllables(inString) {
+    // TODO: Ignore Numbers & Symbols
     let syllablesTotal = 0;
     let wordList = inString.match(/(?:(?:\w-\w)|[\wÀ-ÿ'’])+/g);
     if (wordList) {wordList.forEach((word) => {

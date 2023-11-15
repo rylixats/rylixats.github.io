@@ -1,4 +1,4 @@
-(function () {
+(function (exports) {
    'use strict';
 
    /**
@@ -24408,6 +24408,7 @@
    });
 
    function countTotalSyllables(inString) {
+       // TODO: Ignore Numbers & Symbols
        let syllablesTotal = 0;
        let wordList = inString.match(/(?:(?:\w-\w)|[\wÀ-ÿ'’])+/g);
        if (wordList) {wordList.forEach((word) => {
@@ -24477,17 +24478,11 @@
        }
    }
 
-   const emptyMarker = new class extends GutterMarker {
-       toDOM() { return document.createTextNode("ø") }
-   };
-
    function countSyllables(view, line) {
        let text = view.state.doc.lineAt(line.from).text;
        let count = countTotalSyllables(text);
        return new class extends GutterMarker {
-           toDOM() {
-               return document.createTextNode(count <= 0 ? '' : count)
-           }
+           toDOM = () => document.createTextNode(count <= 0 ? 'ø' : count);
        };
    }
 
@@ -24495,13 +24490,43 @@
        class: "cm-syllableCounter",
        lineMarker(view, line) {
            return line.from === line.to ? null : countSyllables(view, line)
-       },
-       initialSpacer: () => emptyMarker
+       }
    });
 
    lineNumbers({
        formatNumber: n => n.toString(16)
    });
+
+   // TODO: Better Calculation
+   function countWords(doc) {
+       let count = 0, iter = doc.iter();
+       while (!iter.next().done) {
+           let inWord = false;
+           for (let i = 0; i < iter.value.length; i++) {
+               let word = /\w/.test(iter.value[i]);
+               if (word && !inWord) count++;
+               inWord = word;
+           }
+       }
+       return `Word Count: ${count}`
+   }
+
+   function wordCountPanel(view) {
+       let dom = document.createElement("div");
+       dom.id = "word-count";
+       dom.textContent = countWords(view.state.doc);
+       return {
+           dom,
+           update(update) {
+               if (update.docChanged)
+                   dom.textContent = countWords(update.state.doc);
+           }
+       }
+   }
+
+   function wordCounter() {
+       return showPanel.of(wordCountPanel)
+   }
 
    new EditorView({
        doc: "",
@@ -24510,9 +24535,14 @@
            barf,
            // hexLineNumbers,
            syllableCounterGutter,
+           wordCounter(),
            autocompletion({override: [myCompletions]})
        ],
        parent: document.body
    });
 
-})();
+   exports.wordCounter = wordCounter;
+
+   return exports;
+
+})({});
