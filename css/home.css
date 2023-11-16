@@ -16,6 +16,10 @@ html, body {
     color: #fff; /* Set the text color to white */
     margin-bottom: 2.5%; /* Add spacing below the header */
     padding: 5px 15px 5px 15px;
+    border: white dashed 1px;
+}
+
+.header:hover {
     border: #888 dashed 1px;
 }
 
@@ -25,6 +29,10 @@ html, body {
     height: auto; /* Maintain aspect ratio */
     margin-bottom: 20px; /* Add spacing below the image */
     border: white dashed 2px;
+}
+
+.showcase-image:hover {
+    border: #888 dashed 2px;
 }
 
 /* Style for the text in dark mode */
@@ -37,6 +45,10 @@ html, body {
     font-size: 24px;
     margin-bottom: 20px;
     padding: 5px;
+    border: white dashed 1px
+}
+
+h1:hover {
     border: #888 dashed 1px;
 }
 
@@ -55,7 +67,7 @@ html, body {
 }
 
 .btn:hover {
-    border: #008170 dashed 1px;
+    border: yellowgreen dashed 1px;
     background-color: #333; /* Change the button background color on hover */
     color: #fff; /* Change the text color to white on hover */
 }
