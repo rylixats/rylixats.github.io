@@ -24599,6 +24599,12 @@ var editor = (function (exports) {
            barf,
            // hexLineNumbers,
            syllableCounterGutter,
+           EditorView.updateListener.of(update => {
+               if (autoSaveEnabled && update.docChanged) {
+                   const editorContent = update.view.state.doc.toString();
+                   checkAndUpdateForContent(editorContent);
+               }
+           }),
            wordCounter(),
            autocompletion({override: [myCompletions]})
        ],
@@ -24672,6 +24678,96 @@ var editor = (function (exports) {
            insertChunk(); // Start inserting chunks
        };
        reader.readAsText(file);
+   });
+
+   function generateUUID() {
+       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+           const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+           return v.toString(16);
+       });
+   }
+
+   function checkAndUpdateForContent(content) {
+       // Check if the content is empty
+       if (content.trim() === '') {
+           // If content is empty and there's a UUID in the URL, remove it from localStorage and the URL
+           if (currentDocumentUUID) {
+               localStorage.removeItem(currentDocumentUUID); // Remove from localStorage
+               const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+               window.history.replaceState({ path: newUrl }, '', newUrl);
+           }
+           currentDocumentUUID = null; // Reset the UUID since there's no content
+       } else {
+           // Content is not empty, proceed to save and update URL
+           currentDocumentUUID = saveEditorContent(content, currentDocumentUUID);
+       }
+   }
+
+   function saveEditorContent(editorContent, uuid = null) {
+       uuid = uuid || generateUUID();
+
+       localStorage.setItem(uuid, editorContent);
+
+       const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${uuid}`;
+       window.history.replaceState({ path: newUrl }, '', newUrl);
+
+       return uuid; // Return the UUID for future reference
+   }
+
+   let currentDocumentUUID = null;
+
+   window.onload = function() {
+       const urlParams = new URLSearchParams(window.location.search);
+       const uuid = urlParams.get('id');
+
+       if (uuid) {
+           const content = localStorage.getItem(uuid);
+
+           if (content && content.trim() === '' || !content) {
+               // Content is empty, remove from localStorage and reset URL
+               localStorage.removeItem(uuid);
+               const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+               window.history.replaceState({ path: newUrl }, '', newUrl);
+               currentDocumentUUID = null;
+           } else if (content) {
+               // Content is not empty, load it into the editor
+               currentDocumentUUID = uuid;
+               view.dispatch({
+                   changes: { from: 0, to: view.state.doc.length, insert: content }
+               });
+               checkAndUpdateForContent(content); // This will update the URL if needed
+           }
+       }
+   };
+
+   let autoSaveEnabled = true;
+
+   document.getElementById('newButton').addEventListener('click', function() {
+       // Save the current content with the existing UUID
+       const currentContent = view.state.doc.toString();
+       if (currentDocumentUUID) {
+           saveEditorContent(currentContent, currentDocumentUUID);
+       }
+
+       // Disable auto-save temporarily
+       autoSaveEnabled = false;
+
+       // Clear the editor content
+       view.dispatch({
+           changes: { from: 0, to: view.state.doc.length, insert: '' }
+       });
+
+       // Reset the URL without the UUID
+       const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+       window.history.replaceState({ path: newUrl }, '', newUrl);
+
+       // Reset the currentDocumentUUID for a new file
+       currentDocumentUUID = null;
+
+       // Re-enable auto-save
+       setTimeout(() => {
+           autoSaveEnabled = true;
+       }, 0);
    });
 
    exports.wordCounter = wordCounter;
