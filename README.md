@@ -1,4 +1,4 @@
-<a href="https://star-history.com/#rapperide/rapperide.github.io&Date">
+<a href="https://rapperide.github.io">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=rapperide/rapperide.github.io&type=Date&theme=dark" />
     <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=rapperide/rapperide.github.io&type=Date" />
