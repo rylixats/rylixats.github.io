@@ -16,7 +16,6 @@ fetch('/etc/words.json')
         console.error('Error fetching word list:', error);
     });
 
-
 function myCompletions(context) {
     let before = context.matchBefore(/\w+/);
 
@@ -35,20 +34,42 @@ function myCompletions(context) {
     };
 }
 
+const syllableCountCache = new Map();
+
 function countSyllables(view, line) {
-    let text = view.state.doc.lineAt(line.from).text
-    let count = countTotalSyllables(text);
+    let text = view.state.doc.lineAt(line.from).text;
+
+    if (!syllableCountCache.has(text)) {
+        let count = countTotalSyllables(text);
+        syllableCountCache.set(text, count);
+    }
+
+    let count = syllableCountCache.get(text);
     return new class extends GutterMarker {
         toDOM = () => document.createTextNode(count <= 0 ? 'ø' : count);
     };
 }
 
+EditorView.updateListener.of(update => {
+    if (update.docChanged) {
+        // Example condition: clear cache if changes affect more than 10 lines
+        if (update.changes.length > 10) {
+            syllableCountCache.clear();
+        }
+    }
+});
+
 const syllableCounterGutter = gutter({
     class: "cm-syllableCounter",
     lineMarker(view, line) {
-        return line.from === line.to ? null : countSyllables(view, line)
+        const viewport = view.viewport;
+        // Check if the line is within the viewport (visible)
+        if (line.from !== line.to && line.from >= viewport.from && line.to <= viewport.to && view.state.doc.lines <= 1000) {
+            return countSyllables(view, line);
+        }
+        return null;  // Do not show syllable counter for lines outside the viewport
     }
-})
+});
 
 const hexLineNumbers = lineNumbers({
     formatNumber: n => n.toString(16)
@@ -115,4 +136,50 @@ document.getElementById('saveButton').addEventListener('click', function() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+});
+
+document.getElementById('openFileButton').addEventListener('click', function() {
+    document.getElementById('fileInput').click(); // Trigger file input
+});
+
+document.getElementById('fileInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const content = e.target.result;
+        const lineDelimiter = '\n';
+        const chunkSize = 500; // Smaller chunk size
+        const trimmedContent = content.trim(); // Remove trailing spaces
+
+        view.dispatch({
+            changes: { from: 0, to: view.state.doc.length, insert: '' } // Clear the original content
+        });
+
+        const lines = trimmedContent.split(lineDelimiter);
+        let start = 0;
+
+        function insertChunk() {
+            const end = Math.min(start + chunkSize, lines.length);
+            const chunk = lines.slice(start, end).join(lineDelimiter);
+            view.dispatch({
+                changes: { from: view.state.doc.length, insert: chunk }
+            });
+
+            start = end;
+            if (start < lines.length) {
+                // Continue inserting the next chunk
+                if (start >= 1000) {
+                    // Show a warning popup after 1000 lines
+                    alert("Syllable counter is disabled after 1000 lines.");
+                    return;
+                }
+                requestAnimationFrame(insertChunk);
+            }
+        }
+
+        insertChunk(); // Start inserting chunks
+    };
+    reader.readAsText(file);
 });
