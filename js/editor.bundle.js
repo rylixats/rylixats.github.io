@@ -24502,7 +24502,6 @@ var editor = (function (exports) {
            console.error('Error fetching word list:', error);
        });
 
-
    function myCompletions(context) {
        let before = context.matchBefore(/\w+/);
 
@@ -24640,8 +24639,9 @@ var editor = (function (exports) {
            const chunkSize = 500; // Smaller chunk size
            const trimmedContent = content.trim(); // Remove trailing spaces
 
+           // Clear the original content before inserting
            view.dispatch({
-               changes: { from: 0, to: view.state.doc.length, insert: '' } // Clear the original content
+               changes: { from: 0, to: view.state.doc.length, insert: '' }
            });
 
            const lines = trimmedContent.split(lineDelimiter);
@@ -24650,19 +24650,22 @@ var editor = (function (exports) {
            function insertChunk() {
                const end = Math.min(start + chunkSize, lines.length);
                const chunk = lines.slice(start, end).join(lineDelimiter);
+
+               // Insert the chunk into the editor
                view.dispatch({
                    changes: { from: view.state.doc.length, insert: chunk }
                });
 
                start = end;
+
                if (start < lines.length) {
                    // Continue inserting the next chunk
-                   if (start >= 1000) {
-                       // Show a warning popup after 1000 lines
-                       alert("Syllable counter is disabled after 1000 lines.");
-                       return;
-                   }
                    requestAnimationFrame(insertChunk);
+               } else {
+                   // Insertion is complete, show a warning if needed
+                   if (lines.length > 1000) {
+                       alert("Syllable counter is disabled after 1000 lines.");
+                   }
                }
            }
 
