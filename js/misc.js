@@ -20,3 +20,20 @@ function toggleFullscreen() {
         document.msExitFullscreen();
     }
 }
+
+document.querySelectorAll('.dropdown').forEach(dropdown => {
+    dropdown.addEventListener('mouseenter', function() {
+        this.querySelector('.dropdown-content').classList.add('show');
+    });
+    dropdown.addEventListener('mouseleave', function() {
+        this.querySelector('.dropdown-content').classList.remove('show');
+    });
+});
+
+document.getElementById('newButton').addEventListener('click', function() {
+    // Close any open dropdowns
+    const openDropdowns = document.querySelectorAll('.dropdown-content.show');
+    openDropdowns.forEach(dropdown => {
+        dropdown.classList.remove('show');
+    });
+});
