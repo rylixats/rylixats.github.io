@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "rollup": "rollup -c",
-    "google": "node google.js",
-    "words": "node words.js"
+    "google": "node js/google.js",
+    "words": "node js/words.js"
   },
   "author": "",
   "license": "ISC",

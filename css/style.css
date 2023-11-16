@@ -1,14 +1,17 @@
+/* https://colorhunt.co/palette/0f0f0f232d3f005b41008170 */
+/* roughly */
+
 * {
   font-family: monospace;
 }
 
 body {
   color: white;
-  background: black;
+  background: #0F0F0F;
 }
 
 .cm-editor {
-  border: 1px solid darkslategray;
+  border: 1px dashed #888;
 }
 
 .ͼ1 .cm-line {
@@ -29,19 +32,20 @@ body {
 }
 
 /*NAV BAR - START*/
-ul {
+.navbar ul {
   list-style-type: none;
   margin-bottom: 5px;
   padding: 0;
   overflow: hidden;
   background-color: #333;
+  border: 1px dashed #888;
 }
 
-li {
+.navbar li {
   float: left;
 }
 
-li a {
+.navbar li a {
   display: block;
   color: white;
   text-align: center;
@@ -50,13 +54,12 @@ li a {
   text-decoration: none;
 }
 
-.right {
+.navbar .right {
   position: absolute;
   right: 10px;
 }
 
-/* Change the link color to #111 (black) on hover */
-li a:hover {
+.navbar li a:hover {
   background-color: #111;
 }
 /*NAV BAR - END*/

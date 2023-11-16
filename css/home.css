@@ -1,0 +1,61 @@
+/* Center the content vertically and horizontally */
+html, body {
+    height: 100%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    display: flex;
+    flex-direction: column; /* Allow stacking of image and content */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Style for the header */
+.header {
+    font-size: 48px; /* Larger font size */
+    font-weight: bold; /* Bold font weight */
+    color: #fff; /* Set the text color to white */
+    margin-bottom: 2.5%; /* Add spacing below the header */
+    padding: 5px 15px 5px 15px;
+    border: #888 dashed 1px;
+}
+
+/* Style for the showcase image */
+.showcase-image {
+    max-width: 90%; /* Ensure the image doesn't exceed its container */
+    height: auto; /* Maintain aspect ratio */
+    margin-bottom: 20px; /* Add spacing below the image */
+    border: white dashed 2px;
+}
+
+/* Style for the text in dark mode */
+.center-content {
+    text-align: center;
+    color: #fff; /* Set the text color to white */
+}
+
+.center-content h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    padding: 5px;
+    border: #888 dashed 1px;
+}
+
+/* Style for the buttons in dark mode */
+.btn {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #333; /* Set the button background color to dark gray */
+    color: lightgray; /* Set the text color to light gray */
+    text-decoration: none;
+    border: #888 dashed 1px;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn:hover {
+    border: #008170 dashed 1px;
+    background-color: #333; /* Change the button background color on hover */
+    color: #fff; /* Change the text color to white on hover */
+}
