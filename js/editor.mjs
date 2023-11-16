@@ -4,23 +4,35 @@ import {autocompletion} from "@codemirror/autocomplete"
 import {barf} from 'thememirror';
 import {countTotalSyllables} from "./syllable.js";
 
-const completions = [
-    {label: "panic", type: "keyword"},
-    {label: "park", type: "constant", info: "Test completion"},
-    {label: "password", type: "variable"},
-    {label: "penis", type: "keyword"},
-]
+let englishWords = []; // This will be filled with words from the word list
+
+// Asynchronously fetch the word list
+fetch('/etc/words.json')
+    .then(response => response.json())
+    .then(data => {
+        englishWords = data;
+    })
+    .catch(error => {
+        console.error('Error fetching word list:', error);
+    });
+
 
 function myCompletions(context) {
-    let before = context.matchBefore(/\w+/)
-    // If completion wasn't explicitly started and there
-    // is no word before the cursor, don't open completions.
-    if (!context.explicit && !before) return null
+    let before = context.matchBefore(/\w+/);
+
+    if (!context.explicit && !before) return null;
+
+    // Combine rhymes with English dictionary words
+    let combinedCompletions = englishWords.map(word => ({
+        label: word,
+        type: "keyword" // or as appropriate
+    }));
+
     return {
-        from: before ? before.from : context.pos,
-        options: completions,
+        from: before.from,
+        options: combinedCompletions,
         validFor: /^\w*$/
-    }
+    };
 }
 
 function countSyllables(view, line) {
@@ -85,3 +97,22 @@ const view = new EditorView({
     ],
     parent: document.body
 })
+
+document.getElementById('saveButton').addEventListener('click', function() {
+    const content = view.state.doc.toString(); // Get content from CodeMirror
+    if (!content) return;
+
+    const blob = new Blob([content], {type: 'text/plain'});
+    const filename = prompt("Enter a filename for the text file:", "");
+    if (!filename) return; // Exit if no filename is provided
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+
+    a.href = url;
+    a.download = filename; // Use the provided filename
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+});

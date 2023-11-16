@@ -1,4 +1,4 @@
-(function (exports) {
+var editor = (function (exports) {
    'use strict';
 
    /**
@@ -24410,7 +24410,8 @@
    function countTotalSyllables(inString) {
        // TODO: Ignore Numbers & Symbols
        let syllablesTotal = 0;
-       let wordList = inString.match(/(?:(?:\w-\w)|[\wÀ-ÿ'’])+/g);
+       const stringWithWords = convertNumbersToWords(inString.trim());
+       let wordList = stringWithWords.match(/(?:\w-\w|[\wÀ-ÿ'’])+/g);
        if (wordList) {wordList.forEach((word) => {
            if (word === "'"||word==="’") {return;} //bandaid solution.
            if (word.length <= 2) {syllablesTotal += 1; return;} //quick return on short words
@@ -24437,7 +24438,7 @@
            if (asylm) {syllables -= asylm.length;} //A clustered negative
            const usylp = word.match(/uo[^y]|[^gq]ua(?!r)|uen|[^g]iu|uis(?![aeiou]|se)|ou(et|ille)|eu(ing|er)|uye[dh]|nuine|ucle[aeiuy]/gmi);
            if (usylp) {syllables += usylp.length;} //U clustered positive
-           const usylm = word.match(/geous|busi|logu(?!e|i)/gmi);
+           const usylm = word.match(/geous|busi|logu(?![ei])/gmi);
            if (usylm) {syllables -= usylm.length;} //U clustered negative
            const ysylp = word.match(/[ibcmrluhp]ya|nyac|[^e]yo|[aiou]y[aiou]|[aoruhm]ye(tt|l|n|v|z)|pye|dy[ae]|oye[exu]|lye[nlrs]|olye|aye(k|r|$|u[xr]|da)|saye\w|iye|wy[ae]|[^aiou]ying/gmi);
            if (ysylp) {syllables += ysylp.length;} //Y clustered positive
@@ -24459,23 +24460,65 @@
        return syllablesTotal;
    }
 
-   const completions = [
-       {label: "panic", type: "keyword"},
-       {label: "park", type: "constant", info: "Test completion"},
-       {label: "password", type: "variable"},
-       {label: "penis", type: "keyword"},
-   ];
+   function numberToWords(num) {
+       if (num === 0) return 'zero';
+
+       const ones = ['','one','two','three','four','five','six','seven','eight','nine'];
+       const tens = ['','ten','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+       const teens = ['eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+
+       let words = '';
+
+       if (num >= 1000) {
+           words += numberToWords(Math.floor(num / 1000)) + ' thousand ';
+           num %= 1000;
+       }
+
+       if (num >= 20) {
+           words += tens[Math.floor(num / 10)] + ' ';
+           num %= 10;
+       } else if (num >= 11) {
+           return words + teens[num - 11] + ' ';
+       } else if (num === 10) {
+           return words + 'ten ';
+       }
+
+       return words + ones[num] + ' ';
+   }
+
+   function convertNumbersToWords(inString) {
+       return inString.replace(/\d+/g, (match) => numberToWords(parseInt(match)).trim());
+   }
+
+   let englishWords = []; // This will be filled with words from the word list
+
+   // Asynchronously fetch the word list
+   fetch('/etc/words.json')
+       .then(response => response.json())
+       .then(data => {
+           englishWords = data;
+       })
+       .catch(error => {
+           console.error('Error fetching word list:', error);
+       });
+
 
    function myCompletions(context) {
        let before = context.matchBefore(/\w+/);
-       // If completion wasn't explicitly started and there
-       // is no word before the cursor, don't open completions.
-       if (!context.explicit && !before) return null
+
+       if (!context.explicit && !before) return null;
+
+       // Combine rhymes with English dictionary words
+       let combinedCompletions = englishWords.map(word => ({
+           label: word,
+           type: "keyword" // or as appropriate
+       }));
+
        return {
-           from: before ? before.from : context.pos,
-           options: completions,
+           from: before.from,
+           options: combinedCompletions,
            validFor: /^\w*$/
-       }
+       };
    }
 
    function countSyllables(view, line) {
@@ -24528,7 +24571,7 @@
        return showPanel.of(wordCountPanel)
    }
 
-   new EditorView({
+   const view = new EditorView({
        doc: "",
        extensions: [
            basicSetup,
@@ -24539,6 +24582,25 @@
            autocompletion({override: [myCompletions]})
        ],
        parent: document.body
+   });
+
+   document.getElementById('saveButton').addEventListener('click', function() {
+       const content = view.state.doc.toString(); // Get content from CodeMirror
+       if (!content) return;
+
+       const blob = new Blob([content], {type: 'text/plain'});
+       const filename = prompt("Enter a filename for the text file:", "");
+       if (!filename) return; // Exit if no filename is provided
+
+       const url = URL.createObjectURL(blob);
+       const a = document.createElement('a');
+
+       a.href = url;
+       a.download = filename; // Use the provided filename
+       document.body.appendChild(a);
+       a.click();
+       document.body.removeChild(a);
+       URL.revokeObjectURL(url);
    });
 
    exports.wordCounter = wordCounter;

@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "google": "node google.js"
+    "rollup": "rollup -c",
+    "google": "node google.js",
+    "words": "node words.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,9 +18,14 @@
     "@google-cloud/local-auth": "^2.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "codemirror": "^6.0.1",
+    "datamuse": "^1.0.5",
     "googleapis": "^105.0.0",
     "process": "^0.11.10",
     "rollup": "^4.4.1",
-    "thememirror": "^2.0.1"
+    "thememirror": "^2.0.1",
+    "word-list": "^3.1.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7"
   }
 }
