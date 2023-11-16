@@ -1,24 +1,77 @@
-<!doctype html>
-<meta charset="UTF-8">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/x-icon" href="/inc/favicon.ico">
     <title>Rapper IDE</title>
+    <style>
+        /* Center the content vertically and horizontally */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column; /* Allow stacking of image and content */
+            justify-content: center;
+            align-items: center;
+            background-color: #000; /* Set the background color to black */
+        }
+
+        /* Style for the header */
+        .header {
+            font-size: 48px; /* Larger font size */
+            font-weight: bold; /* Bold font weight */
+            color: #fff; /* Set the text color to white */
+            margin-bottom: 2.5%; /* Add spacing below the header */
+        }
+
+        /* Style for the showcase image */
+        .showcase-image {
+            max-width: 90%; /* Ensure the image doesn't exceed its container */
+            height: auto; /* Maintain aspect ratio */
+            margin-bottom: 20px; /* Add spacing below the image */
+            border: white dashed 2px;
+        }
+
+        /* Style for the text in dark mode */
+        .center-content {
+            text-align: center;
+            color: #fff; /* Set the text color to white */
+        }
+
+        .center-content h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Style for the buttons in dark mode */
+        .btn {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #333; /* Set the button background color to dark gray */
+            color: lightgray; /* Set the text color to light gray */
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn:hover {
+            border: white solid 1px;
+            background-color: #333; /* Change the button background color on hover */
+            color: #fff; /* Change the text color to white on hover */
+        }
+    </style>
 </head>
 <body>
-<div>
-    <ul>
-        <li>
-            <input type="file" id="fileInput" style="display: none;" accept=".txt" />
-            <a id="openFileButton" href="#">Open File</a>
-        </li>
-        <li><a id="saveButton" href="#">Save File</a></li>
-        <li><a id="toggleFullscreen" href="#" onclick="toggleFullscreen()">Toggle Fullscreen</a></li>
-        <li><a class="right" href="https://github.com/rapperide/rapperide.github.io" target="_blank">Open Source <3</a></li>
-    </ul>
+<div class="header">Rapper IDE</div>
+<img class="showcase-image" src="inc/showcase.png" alt="showcase" height="256px">
+<div class="center-content">
+    <h1>minimalistic rap editor</h1>
+    <a class="btn" href="editor.html">get started</a>
+    <a class="btn" href="https://github.com/rapperide/rapperide.github.io" target="_blank">open source</a>
 </div>
-<script src="js/misc.js"></script>
-<script src="js/editor.bundle.js"></script>
 </body>
 </html>
