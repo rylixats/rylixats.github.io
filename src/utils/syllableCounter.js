@@ -1,5 +1,5 @@
 export function countTotalSyllables(inString) {
-    // TODO: Ignore Numbers & Symbols
+    // TODO: Ignore Symbols
     let syllablesTotal = 0;
     const stringWithWords = convertNumbersToWords(inString.trim());
     let wordList = stringWithWords.match(/(?:\w-\w|[\wÀ-ÿ'’])+/g);

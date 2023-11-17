@@ -43,9 +43,11 @@ html, body {
 
 .center-content h1 {
     font-size: 24px;
-    margin-bottom: 20px;
+    margin: 20px auto; /* Center the h1 horizontally and add margin */
     padding: 5px;
-    border: white dashed 1px
+    border: white dashed 1px;
+    display: block; /* Make h1 only as wide as its content */
+    max-width: fit-content; /* Adjust as per your design preference */
 }
 
 h1:hover {

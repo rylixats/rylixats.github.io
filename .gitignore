@@ -1,4 +1,23 @@
+# Local To Do File
+todo.txt
+
+# Dependency directories
+node_modules
+
+# TypeScript compiled files
+dist
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.local
+
+# Editor directories and files
 .vs
 .idea
-node_modules/
-todo.txt
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
