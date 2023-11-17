@@ -3,7 +3,7 @@ import {showPanel} from "@codemirror/view";
 export let englishWords = [];
 
 export function fetchWordList() {
-    fetch('../../public/api/words.json')
+    fetch('../../api/words.json')
         .then(response => response.json())
         .then(data => {
             englishWords = data;
